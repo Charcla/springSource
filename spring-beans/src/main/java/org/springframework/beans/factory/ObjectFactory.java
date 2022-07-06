@@ -36,10 +36,12 @@ import org.springframework.beans.BeansException;
  * @param <T> the object type
  * @see FactoryBean
  */
+//一个对象工厂
 @FunctionalInterface
 public interface ObjectFactory<T> {
 
 	/**
+	 * 返回一个bean
 	 * Return an instance (possibly shared or independent)
 	 * of the object managed by this factory.
 	 * @return the resulting instance

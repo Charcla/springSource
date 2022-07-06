@@ -216,6 +216,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 				canonicalName = resolvedName;
 			}
 		}
+		//TODO,这个死循环是什么意思
 		while (resolvedName != null);
 		return canonicalName;
 	}

@@ -2,10 +2,13 @@ package com.charcl.study;
 
 import com.charcl.study.config.AppConfig;
 import com.charcl.study.service.BookService;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-public class Test {
+public class Test implements BeanFactoryPostProcessor {
 
 	//测试attributeAccessorSupport类中的Map集合存放什么东东
 	public static void beanDefinitionTest(){
@@ -30,5 +33,13 @@ public class Test {
 		beanDefinitionTest();
 //		attributeAccessorSupportMap();
 
+	}
+
+	@Override
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+//		BeanDefinition beanDefinition = beanFactory.getBeanDefinition();
+		//modify bean definition
+//		beanDefinition.setAttribute(); //modify attrbute
+		//invokeBeanFactoryPostProcessors refresh（）-》 invokeBeanFactoryPostProcessors #
 	}
 }

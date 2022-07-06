@@ -166,6 +166,11 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		}
 	}
 
+	/**
+	 * 从容器中获取单例
+	 * @param beanName the name of the bean to look for
+	 * @return
+	 */
 	@Override
 	@Nullable
 	public Object getSingleton(String beanName) {
@@ -177,7 +182,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * <p>Checks already instantiated singletons and also allows for an early
 	 * reference to a currently created singleton (resolving a circular reference).
 	 * @param beanName the name of the bean to look for
-	 * @param allowEarlyReference whether early references should be created or not
+	 * @param allowEarlyReference whether early references should be created or not 是否支持循环依赖，默认为true
 	 * @return the registered singleton object, or {@code null} if none found
 	 */
 	@Nullable
@@ -187,17 +192,25 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 		Object singletonObject = this.singletonObjects.get(beanName);
 		//如果一级缓存中没有这个bean，并且这个bean也不是在创建中的状态，则就无法获取bean，直接返回空
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
+
+			//二级缓存中获取这个bean
 			singletonObject = this.earlySingletonObjects.get(beanName);
 			if (singletonObject == null && allowEarlyReference) {
+				//加锁
 				synchronized (this.singletonObjects) {
 					// Consistent creation of early reference within full singleton lock
+					//再次从一级缓存拿，可能在过程中加载了
 					singletonObject = this.singletonObjects.get(beanName);
 					if (singletonObject == null) {
+						//再次从二级缓存拿
 						singletonObject = this.earlySingletonObjects.get(beanName);
 						if (singletonObject == null) {
+							//再次从三级缓存拿取bean工厂
 							ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 							if (singletonFactory != null) {
+								//根据bean工厂拿到bean
 								singletonObject = singletonFactory.getObject();
+								//bean放到二级代理，同时从三级代理移除
 								this.earlySingletonObjects.put(beanName, singletonObject);
 								this.singletonFactories.remove(beanName);
 							}
